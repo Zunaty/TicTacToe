@@ -33,11 +33,50 @@ namespace TicTacToe
         public MainWindow()
         {
             InitializeComponent();
+            SetupGameGrid();
+
+            gameState.MoveMade += OnMoveMade;
+            gameState.GameEnded += OnGameEnded;
+            gameState.GameRestarted += OnGameRestarted;
+        }
+
+        private void SetupGameGrid()
+        {
+            for (int r = 0; r < 3; r++)
+            {
+                for(int c = 0; c < 3; c++)
+                {
+                    Image imageControl = new Image();
+                    GameGrid.Children.Add(imageControl);
+                    imageControls[r, c] = imageControl;
+                }
+            }
+        }
+
+        private void OnMoveMade(int r, int c)
+        {
+            Player player = gameState.GameGrid[r, c];
+            imageControls[r, c].Source = imageSources[player];
+            PlayerImage.Source = imageSources[gameState.CurrentPlayer];
+        }
+
+        private void OnGameEnded(GameResult gameResult)
+        {
+
+        }
+
+        private void OnGameRestarted()
+        {
+
         }
 
         private void GameGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            double squareSize = GameGrid.Width / 3;
+            Point clickPosition = e.GetPosition(GameGrid);
+            int row = (int)(clickPosition.Y / squareSize);
+            int col = (int)(clickPosition.X / squareSize);
+            gameState.MakeMove(row, col);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
